@@ -66,4 +66,29 @@ class TaskModelTestCase(TestCase):
         self.assertEqual(responese.status_code,200)
         self.assertEqual(responese.templates[0].name, 'todo/index.html')
         self.assertEqual(len(responese.context['tasks']), 1)
-        
+
+    def test_index_get_order_post(self):
+        task1 = Task(title='task1', due_at=timezone.make_aware(datetime(2023, 7,1)))
+        task1.save()
+        task2 = Task(title='task2', due_at=timezone.make_aware(datetime(2023, 8,1)))
+        task2.save()
+        client = Client()
+        responese = client.get('/?order=post')
+
+        self.assertEqual(responese.status_code, 200)
+        self.assertEqual(responese.templates[0].name, 'todo/index.html')
+        self.assertEqual(responese.context['tasks'][0], task2)
+        self.assertEqual(responese.context['tasks'][1], task1)
+
+    def test_index_get_order_post(self):
+        task1 = Task(title='task1', due_at=timezone.make_aware(datetime(2023, 7,1)))
+        task1.save()
+        task2 = Task(title='task2', due_at=timezone.make_aware(datetime(2023, 8,1)))
+        task2.save()
+        client = Client()
+        responese = client.get('/?order=post')
+
+        self.assertEqual(responese.status_code, 200)
+        self.assertEqual(responese.templates[0].name, 'todo/index.html')
+        self.assertEqual(responese.context['tasks'][0], task1)
+        self.assertEqual(responese.context['tasks'][1], task2)
